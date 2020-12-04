@@ -1,10 +1,24 @@
 import express from 'express';
-const app = express();
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
 const port = 5000;
 
-app.get('/', (_, res) => {
-  res.status(200).send()
+const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
 });
 
-app.listen(port, () => console.log(`Running on port ${port}`));
+io.on('connection', (socket) => {
+  console.log('connection')
+
+  socket.on('disconnect', () => {
+    console.log('disconnect')
+  });
+});
+
+httpServer.listen(port, () => console.log(`Running on port ${port}`));
