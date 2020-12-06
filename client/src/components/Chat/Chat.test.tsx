@@ -1,10 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import Container from './Container';
+import Chat from './Chat';
 
 const props = (overrides: any = {}) => ({
+  user: 'user 1',
   messages: [],
+  onMessageAdd: jest.fn(),
   ...overrides
 });
 
@@ -31,13 +33,13 @@ const testMessages = [
   },
 ];
 
-test('renders empty container', () => {
-  const { container } = render(<Container {...props()} />);
+test('should render an empty chat', () => {
+  const { container } = render(<Chat {...props()} />);
   expect(container.querySelectorAll('.message').length).toBe(0);
 });
 
-test('renders all messages', () => {
-  const { getByText } = render(<Container {...props({ messages: testMessages })} />);
+test('should render messages in the chat', () => {
+  const { getByText } = render(<Chat {...props({ messages: testMessages })} />);
 
   const messageOne = getByText('Lorem ipsul dolor sit amet 1');
   const messageTwo = getByText('Lorem ipsul dolor sit amet 2');
