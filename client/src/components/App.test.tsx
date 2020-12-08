@@ -46,16 +46,3 @@ test('should render room page if room is created', () => {
 
   expect(container.querySelector('.chat')).toBeInTheDocument();
 });
-
-// test('should render new message when the user submits input', () => {
-//   const { container, getByPlaceholderText, getByText } = render(<App {...props()} />);
-//   const input = getByPlaceholderText('Enter a message');
-//   const form: any = container.querySelector('form');
-
-//   fireEvent.input(input, { target: { value: 'My new message' } });
-//   fireEvent.submit(form);
-
-//   const message = getByText('My new message');
-
-//   expect(message).toBeInTheDocument();
-// });

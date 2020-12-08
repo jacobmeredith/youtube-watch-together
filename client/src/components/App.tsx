@@ -1,44 +1,50 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
+import { useDispatch, useSelector} from 'react-redux';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect
 } from 'react-router-dom';
-import socket from 'socket.io-client';
 
-import { reducer, defaultState, IStateInterface } from './../state/state';
+import { io } from '../state/scoket';
 
 import Home from './Pages/Home';
 import Room from './Pages/Room';
 
-const App: React.FC<{ initialState: IStateInterface|null }> = ({ initialState }) => {
-  const [state, dispatch] = useReducer(reducer, initialState||defaultState); // TODO: Make this able to be init from local storage
-
+const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const [user, room, video] = [
+    useSelector((state: any) => state.user.name),
+    useSelector((state: any) => state.room.id),
+    useSelector((state: any) => state.room.video),
+  ];
+  
   useEffect(() => {
-    const io = socket.io(process.env.REACT_APP_SOCKET_URL ? process.env.REACT_APP_SOCKET_URL : '');
-    dispatch({ type: 'IO_CONNECTED', payload: io });
+    // dispatch({ type: 'IO_CONNECTED', payload: io });
 
-    io.on('NEW_ROOM', (e: any) => {
+    io.on('CREATE_ROOM', (e: any) => {
       dispatch({ type: 'ROOM_UPDATE', payload: e });
     });
 
-    io.on('NEW_MESSAGE', (e: any) => {
-      dispatch({ type: 'MESSAGE_RECIEVED', payload: e });
+    io.on('CREATE_MESSAGE', (e: any) => {
+      if (e.from !== user)
+        dispatch({ type: 'MESSAGES_UPDATE', payload: e });
     });
 
     io.on('CHANGE_VIDEO', (e: any) => {
-      dispatch({ type: 'VIDEO_RECIEVED', payload: e });
+      if (e !== video)
+        dispatch({ type: 'ROOM_VIDEO_UPDATE', payload: e });
     });
 
     io.on('UPDATE_VIDEO', (e: any) => {
-      dispatch({ type: 'VIDEO_EVENT', payload: e });
+      dispatch({ type: 'ROOM_STATE_UPDATE', payload: e });
     });
 
     return () => {
-      dispatch({ type: 'IO_CLOSE', payload: null });
-      io.disconnect();
+      // dispatch({ type: 'IO_CLOSE', payload: null });
+      // io.disconnect();
     };
   }, []);
 
@@ -46,24 +52,9 @@ const App: React.FC<{ initialState: IStateInterface|null }> = ({ initialState })
     <ThemeProvider theme={{}}>
       <Router>
         <Switch>
-          <Route path='/room/:id' render={(props) => {
-            return <Room
-              {...props}
-              video={state.video}
-              state={state.state}
-              time={state.time}
-              room={state.room}
-              user={state.user}
-              messages={state.messages}
-              onJoinRoom={(nick: string, id: string) => dispatch({ type: 'ROOM_JOIN', payload: { user: nick, room: id } })}
-              onCreateMessage={(e: string) => dispatch({ type: 'MESSAGE_CREATE', payload: e })}
-              onVideoChange={(e: string) => dispatch({ type: 'VIDEO_CHANGE', payload: e })}
-              onVideoUpdate={(e: any) => dispatch({ type: 'VIDEO_UPDATE', payload: e })} />
-          }} />
-          {!state.room && <Route path='/' render={(props) => {
-            return <Home {...props} onSubmit={(e: string) => dispatch({ type: 'ROOM_CREATE', payload: e })} />
-          }} />}
-          {state.room && <Redirect path='/' to={`/room/${state.room}`} />}
+          <Route path='/room/:id' render={(props) => <Room {...props} />} />
+          {!room && <Route path='/' render={() => <Home />} />}
+          {room && <Redirect path='/' to={`/room/${room}`} />}
         </Switch>
       </Router>
     </ThemeProvider>

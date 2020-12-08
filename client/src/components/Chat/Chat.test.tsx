@@ -1,13 +1,37 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { createStore } from '@reduxjs/toolkit';
 
 import Chat from './Chat';
 
+let defaultState: any = {};
+let reducer: any;
+let store: any;
+
 const props = (overrides: any = {}) => ({
-  user: 'user 1',
-  messages: [],
-  onMessageAdd: jest.fn(),
   ...overrides
+});
+
+function component(props: any) {
+  return render(
+    <Provider store={store}>
+      <Chat {...props} />
+    </Provider>
+  )
+};
+
+beforeEach(() => {
+  defaultState = { 
+    user: { name: '7897' },
+    messages: { messages: [] }
+  };
+
+  reducer = (state: any =  defaultState, action: any) => {
+    return state;
+  };
+
+  store = createStore(reducer);
 });
 
 const testMessages = [
@@ -34,12 +58,24 @@ const testMessages = [
 ];
 
 test('should render an empty chat', () => {
-  const { container } = render(<Chat {...props()} />);
+  const { container } = component({...props()});
   expect(container.querySelectorAll('.message').length).toBe(0);
 });
 
 test('should render messages in the chat', () => {
-  const { getByText } = render(<Chat {...props({ messages: testMessages })} />);
+  defaultState = { 
+    user: { name: '7897' },
+    room: { id: '686', results: { videos: [] }},
+    messages: { messages: testMessages }
+  };
+
+  reducer = (state: any =  defaultState, action: any) => {
+    return state;
+  };
+
+  store = createStore(reducer);
+
+  const { getByText } = component({...props()});
 
   const messageOne = getByText('Lorem ipsul dolor sit amet 1');
   const messageTwo = getByText('Lorem ipsul dolor sit amet 2');

@@ -5,12 +5,12 @@ interface ICardInterface {
   id: string,
   thumbnail: string,
   title: string,
-  onVideoChange: Function
+  onClick: any
 }
 
-const Card: React.FC<ICardInterface> = ({ id, thumbnail, title, onVideoChange }) => {
+const Card: React.FC<ICardInterface> = ({ thumbnail, title, onClick }) => {
   return (
-    <CardDiv className='card' onClick={() => onVideoChange(id)}>
+    <CardDiv className='card' onClick={onClick}>
       <CardImage style={{ backgroundImage: `url(${thumbnail})` }} />
       <CardContent>
         <p>{title}</p>

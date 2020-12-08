@@ -1,13 +1,9 @@
 import React from 'react';
 import CreateRoom from '../User/CreateRoom';
 
-interface IHomeInterface {
-  onSubmit: Function
-}
-
-const Home: React.FC<IHomeInterface> = ({ onSubmit }) => {
+const Home: React.FC = () => {
   return (
-    <CreateRoom onSubmit={(e: any) => onSubmit(e)} />
+    <CreateRoom />
   )
 }
 

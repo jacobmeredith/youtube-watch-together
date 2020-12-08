@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 interface IJoinRoomInterface {
-  onSubmit: Function
+  roomId: string
 }
 
-const JoinRoom: React.FC<IJoinRoomInterface> = ({ onSubmit }) => {
+const JoinRoom: React.FC<IJoinRoomInterface> = ({ roomId }) => {
+  const dispatch = useDispatch();
   const [nick, setNick] = useState('');
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSubmit(nick);
+    dispatch({ type: 'ROOM_JOIN', payload: { user: nick, room: roomId } });
   }
 
   return (

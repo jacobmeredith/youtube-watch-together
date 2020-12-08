@@ -1,9 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { createStore } from '@reduxjs/toolkit';
 
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 var mock = new MockAdapter(axios);
+
 mock.onGet().reply(200, {
   nextPageToken: '',
   items: [
@@ -25,17 +28,36 @@ mock.onGet().reply(200, {
 
 import Video from './Video';
 
+const defaultState = { 
+  room: { 
+    video: '1234',
+    state: 'onPlay',
+    results: {
+      next: '',
+      videos: []
+    },
+    time: 1
+  } 
+}
+
+const reducer = (state: any = defaultState, action: any) => {
+  return state;
+};
+const store = createStore(reducer);
 const props = (overrides: any = {}) => ({
-  video: '',
-  state: '',
-  time: 0,
-  onVideoChange: jest.fn(),
-  onVideoUpdate: jest.fn(),
   ...overrides
 });
 
+function component(props: any) {
+  return render(
+    <Provider store={store}>
+      <Video {...props} />
+    </Provider>
+  )
+};
+
 test('should render the video component', async () => {
-  const { findByPlaceholderText, findByTestId } = render(<Video {...props()} />);
+  const { findByPlaceholderText, findByTestId } = component({...props()});
   expect(await findByPlaceholderText('Search for a video')).toBeInTheDocument();
   expect(await findByTestId('player')).toBeInTheDocument();
 });

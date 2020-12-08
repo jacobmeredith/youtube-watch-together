@@ -1,20 +1,38 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { createStore } from '@reduxjs/toolkit';
+
 import CreateRoom from './CreateRoom';
 
+const mockUseDispatch = jest.fn();
+jest.mock('react-redux', () => ({
+  ...Object.assign({}, jest.requireActual('react-redux')),
+  useDispatch: () => mockUseDispatch
+}));
+
+const reducer = jest.fn();
+const store = createStore(reducer);
 const props = (overrides: any = {}) => ({
-  onSubmit: jest.fn(),
   ...overrides
 });
 
+function component(props: any) {
+  return render(
+    <Provider store={store}>
+      <CreateRoom {...props} />
+    </Provider>
+  )
+};
+
 test('should render input and button', () => {
-  const { getByPlaceholderText, getByText } = render(<CreateRoom {...props()} />);
+  const { getByPlaceholderText, getByText } = component({...props()});
   expect(getByPlaceholderText('Enter your nick name')).toBeInTheDocument();
   expect(getByText('Create room')).toBeInTheDocument();
 });
 
 test('should update input value', () => {
-  const { getByPlaceholderText } = render(<CreateRoom {...props()} />);
+  const { getByPlaceholderText } = component({...props()});
   const input: any = getByPlaceholderText('Enter your nick name');
   
   fireEvent.input(input, { target: { value: 'Name' } });
@@ -22,12 +40,13 @@ test('should update input value', () => {
   expect(input.value).toBe('Name');
 });
 
-test('should call onSubmit prop when button is clicked', () => {
-  const mockFunction = jest.fn();
-  const { getByText } = render(<CreateRoom {...props({ onSubmit: mockFunction })} />);
-  const button = getByText('Create room');
+test('should dispatch action', () => {
+  const { getByPlaceholderText, container } = component({...props()});
+  const input: any = getByPlaceholderText('Enter your nick name');
+  const form: any = container.querySelector('form');
+  
+  fireEvent.input(input, { target: { value: 'Name' } });
+  fireEvent.submit(form);
 
-  fireEvent.click(button);
-
-  expect(mockFunction).toHaveBeenCalled();
+  expect(mockUseDispatch).toHaveBeenCalled();
 });

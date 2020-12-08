@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
+import { useDispatch} from 'react-redux';
 
-interface ICreateRoomInterface {
-  onSubmit: Function
-}
-
-const CreateRoom: React.FC<ICreateRoomInterface> = ({ onSubmit }) => {
+const CreateRoom: React.FC = () => {
+  const dispatch = useDispatch();
   const [nick, setNick] = useState('');
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSubmit(nick);
+    dispatch({ type: 'ROOM_CREATE', payload: nick });
   }
 
   return (

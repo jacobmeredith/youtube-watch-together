@@ -1,23 +1,22 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 import Message from './Message';
 import Input from './Input';
 
-export interface IChatInterface {
-  user: string|null,
-  messages: Array<{ id: string, content: string, from: string }>,
-  onMessageAdd: Function,
-}
-
-const Chat: React.FC<IChatInterface> = ({ user, messages, onMessageAdd }) => {
+const Chat: React.FC = () => {
+  const [user, messages] = [
+    useSelector((state: any) => state.user.name),
+    useSelector((state: any) => state.messages.messages)
+  ];
   const container: any = useRef(null);
 
   useEffect(() => {
     container.current.scrollTop = container.current.scrollHeight;
   }, [messages]);
 
-  const messagesMap = messages.map((message, index) => (
+  const messagesMap = messages.map((message: any, index: number) => (
     <Message key={index} user={user} from={message.from} content={message.content} />
   ));
 
@@ -26,7 +25,7 @@ const Chat: React.FC<IChatInterface> = ({ user, messages, onMessageAdd }) => {
       <MessagesContainer ref={container}>
         <Messages>{messagesMap}</Messages>
       </MessagesContainer>
-      <Input onMessageSubmit={onMessageAdd} />
+      <Input />
     </ChatContainer>
   );
 }

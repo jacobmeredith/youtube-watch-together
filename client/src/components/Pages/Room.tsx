@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 import Modal from '../Common/Modal';
 import JoinRoom from '../User/JoinRoom';
@@ -7,28 +8,20 @@ import Video from './../Video/Video';
 import Chat from '../Chat/Chat';
 
 interface IRoomInterface {
-  match: any,
-  video: string,
-  state: string,
-  time: number,
-  room: string|null,
-  user: string|null,
-  messages: Array<any>,
-  onJoinRoom: Function,
-  onCreateMessage: Function,
-  onVideoChange: Function,
-  onVideoUpdate: Function
+  match: any
 }
 
-const Room: React.FC<IRoomInterface> = ({ match, video, state, time, room, user, messages, onJoinRoom, onCreateMessage, onVideoChange, onVideoUpdate }) => {
+const Room: React.FC<IRoomInterface> = ({ match }) => {
+  const [user, room] = [useSelector((state: any) => state.user.name), useSelector((state: any) => state.room.id)];
+  
   return (
     <>
       {(!room && !user) && <Modal isOpen>
-        <JoinRoom onSubmit={(e: any) => onJoinRoom(e, match.params.id)} />
+        <JoinRoom roomId={match.params.id} />
       </Modal>}
       {(room && user) && <RoomContainer>
-        <Video video={video} state={state} time={time} onVideoChange={onVideoChange} onVideoUpdate={onVideoUpdate} />
-        <Chat user={user} messages={messages} onMessageAdd={(e: any) => onCreateMessage(e)} />
+        <Video />
+        <Chat />
       </RoomContainer>}
     </>
   )

@@ -1,19 +1,17 @@
 import React, { useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+
 import YouTube from 'react-youtube';
 
-interface IPlayerInterface {
-  id: string,
-  state: string,
-  time: Number,
-  onReady: any,
-  onPlay: any,
-  onPause: any,
-  onEnd: any
-}
-
-const Player: React.FC<IPlayerInterface> = ({ id, state, time, onReady, onPlay, onPause, onEnd }) => {
+const Player: React.FC = () => {
   const element: any = useRef(null);
+  const dispatch = useDispatch();
+  const [id, state, time] = [
+    useSelector((state: any) => state.room.video),
+    useSelector((state: any) => state.room.state),
+    useSelector((state: any) => state.room.time)
+  ];
 
   useEffect(() => {
     element.current.getInternalPlayer().seekTo(time);
@@ -26,12 +24,12 @@ const Player: React.FC<IPlayerInterface> = ({ id, state, time, onReady, onPlay, 
       <YouTube
         className='player__frame'
         ref={element}
-        videoId={id ? id : ''}
+        videoId={id}
         opts={{ playerVars: { autoplay: 1 } }}
-        onReady={onReady}
-        onPlay={onPlay}
-        onPause={onPause}
-        onEnd={onEnd} />
+        onReady={(e) => dispatch({ type: 'ROOM_STATE_CHANGE', payload: { state: 'onReady', time: e.target.getCurrentTime() } })}
+        onPlay={(e) => dispatch({ type: 'ROOM_STATE_CHANGE', payload: { state: 'onPlay', time: e.target.getCurrentTime() } })}
+        onPause={(e) => dispatch({ type: 'ROOM_STATE_CHANGE', payload: { state: 'onPause', time: e.target.getCurrentTime() } })}
+        onEnd={(e) => dispatch({ type: 'ROOM_STATE_CHANGE', payload: { state: 'onEnd', time: e.target.getCurrentTime() } })} />
     </PlayerContainer>
   )
 }

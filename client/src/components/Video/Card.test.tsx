@@ -7,7 +7,7 @@ const props = (overrides: any = {}) => ({
   id: '123456',
   thumbnail: 'https://placehold.it/500x300',
   title: 'Video title',
-  onVideoChange: jest.fn(),
+  onClick: jest.fn(),
   ...overrides
 });
 
@@ -18,7 +18,7 @@ test('should render a card component', () => {
 
 test('should call onVideoChange prop when card is clicked', () => {
   const mockFunction = jest.fn();
-  const { container } = render(<Card {...props({ onVideoChange: mockFunction })} />);
+  const { container } = render(<Card {...props({ onClick: mockFunction })} />);
   const card: any = container.querySelector('.card');
   fireEvent.click(card);
   expect(mockFunction).toHaveBeenCalled();

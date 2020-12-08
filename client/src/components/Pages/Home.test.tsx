@@ -1,22 +1,26 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { createStore } from '@reduxjs/toolkit';
+
 import Home from './Home';
 
+const reducer = jest.fn();
+const store = createStore(reducer);
 const props = (overrides: any = {}) => ({
-  onSubmit: jest.fn,
   ...overrides
 });
 
+function component(props: any) {
+  return render(
+    <Provider store={store}>
+      <Home {...props} />
+    </Provider>
+  )
+};
+
 test('should render the default component', () => {
-  const { getByPlaceholderText, getByText } = render(<Home {...props()} />);
+  const { getByPlaceholderText, getByText } = component({...props()});
   expect(getByPlaceholderText('Enter your nick name')).toBeInTheDocument();
   expect(getByText('Create room')).toBeInTheDocument();
-});
-
-test('should call onSubmit prop when form is submitted', () => {
-  const mockedFunction = jest.fn();
-  const { container } = render(<Home {...props({ onSubmit: mockedFunction })} />);
-  const form: any = container.querySelector('form');
-  fireEvent.submit(form);
-  expect(mockedFunction).toHaveBeenCalled();
 });

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -14,9 +15,13 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-error-boundary": "^3.1.0",
+    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "react-youtube": "^7.13.0",
+    "redux": "^4.0.5",
+    "redux-batched-subscribe": "^0.1.6",
+    "redux-saga": "^1.1.3",
     "socket.io-client": "^3.0.3",
     "styled-components": "^5.2.1",
     "typescript": "^4.0.3",
@@ -50,9 +55,7 @@
     ]
   },
   "jest": {
-    "watchPathIgnorePatterns": [
-      "src/components/Pages"
-    ],
+    "watchPathIgnorePatterns": [],
     "coveragePathIgnorePatterns": [
       "/src/index.tsx",
       "/src/stories"
@@ -65,9 +68,12 @@
     "@storybook/node-logger": "^6.1.10",
     "@storybook/preset-create-react-app": "^3.1.5",
     "@storybook/react": "^6.1.10",
+    "@types/react-redux": "^7.1.11",
     "@types/react-router-dom": "^5.1.6",
+    "@types/redux-batched-subscribe": "^0.1.4",
     "@types/styled-components": "^5.1.4",
     "axios-mock-adapter": "^1.19.0",
+    "redux-devtools": "^3.7.0",
     "socket.io-mock": "^1.3.1"
   }
 }

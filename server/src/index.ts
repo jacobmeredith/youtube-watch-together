@@ -18,12 +18,15 @@ io.on('connection', (socket) => {
   const name = uuid();
   socket.username = name;
 
-  socket.on('NEW_ROOM', (data: any) => {
+  socket.on('CREATE_ROOM', (data: any) => {
     socket.username = data;
+    
     const id = uuid();
+    
     socket.room = id;
     socket.join(id);
-    io.to(id).emit('NEW_ROOM', id);
+    
+    io.to(id).emit('CREATE_ROOM', id);
   });
 
   socket.on('JOIN_ROOM', (data: any) => {
@@ -32,8 +35,8 @@ io.on('connection', (socket) => {
     socket.join(data.room);
   });
 
-  socket.on('NEW_MESSAGE', (data: any) => {
-    socket.to(socket.room).emit('NEW_MESSAGE', data);
+  socket.on('CREATE_MESSAGE', (data: any) => {
+    socket.to(socket.room).emit('CREATE_MESSAGE', data);
   });
 
   socket.on('CHANGE_VIDEO', (data: any) => {

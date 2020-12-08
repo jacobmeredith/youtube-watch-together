@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
-interface IInputInterface {
-  onMessageSubmit: Function
-}
-
-const Input: React.FC<IInputInterface> = ({ onMessageSubmit }) => {
+const Input: React.FC = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.user.name);
   const [message, setMessage] = useState('');
 
   function handleSubmit(event: any): any {
     event.preventDefault();
-    onMessageSubmit(message);
+    dispatch({ type: 'MESSAGE_CREATE', payload: { id: '', content: message, from: user } });
     setMessage('');
   }
 

@@ -1,47 +1,63 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { createStore } from '@reduxjs/toolkit';
 
 import Room from './Room';
+
+let defaultState: any = {};
+let reducer: any;
+let store: any;
 
 const props = (overrides: any = {}) => ({
   match: {
     params: {
-      id: '12345'
+      id: 'test'
     }
   },
-  room: 'room 1',
-  user: 'user 1',
-  messages: [],
-  onJoinRoom: jest.fn,
-  onCreateMessage: jest.fn,
   ...overrides
 });
 
+function component(props: any) {
+  return render(
+    <Provider store={store}>
+      <Room {...props} />
+    </Provider>
+  )
+};
+
+beforeEach(() => {
+  defaultState = { 
+    user: { name: '7897' },
+    room: { id: '686', results: { videos: [] }},
+    messages: { messages: [] }
+  };
+
+  reducer = (state: any =  defaultState, action: any) => {
+    return state;
+  };
+
+  store = createStore(reducer);
+});
+
 test('should render chat', () => {
-  const { container } = render(<Room {...props()} />);
+  const { container } = component({...props()});
   expect(container.querySelector('.chat')).toBeInTheDocument();
 });
 
-test('should call onCreateMessage prop when submitting a message', () => {
-  const mockedFunction = jest.fn();
-  const { container, getByPlaceholderText } = render(<Room {...props({ onCreateMessage: mockedFunction })} />);
-  const form: any = container.querySelector('form.chat-input');
-  const input = getByPlaceholderText('Enter a message');
+test('should render join room if users has not connected to a room', () => {
+  defaultState = { 
+    user: { name: '' },
+    room: { id: '', results: { videos: [] }},
+    messages: { messages: [] }
+  };
 
-  fireEvent.input(input, { target: { value: 'My message' } });
-  fireEvent.submit(form);
+  reducer = (state: any =  defaultState, action: any) => {
+    return state;
+  };
 
-  expect(mockedFunction).toHaveBeenCalled();
-});
+  store = createStore(reducer);
 
-test('should call onJoinRoom prop when joining a room', () => {
-  const mockedFunction = jest.fn();
-  const { container, getByPlaceholderText } = render(<Room {...props({ room: null, user: null, onJoinRoom: mockedFunction })} />);
-  const form: any = container.querySelector('form');
-  const input = getByPlaceholderText('Enter your nick name');
-
-  fireEvent.input(input, { target: { value: 'username' } });
-  fireEvent.submit(form);
-
-  expect(mockedFunction).toHaveBeenCalled();
+  const { container } = component({...props()});
+  expect(container.querySelector('.join-room')).toBeInTheDocument();
 });
