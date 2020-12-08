@@ -8,7 +8,7 @@ import {
   Redirect
 } from 'react-router-dom';
 
-import { io } from '../state/scoket';
+import { io } from '../state/socket';
 
 import Home from './Pages/Home';
 import Room from './Pages/Room';
@@ -22,30 +22,17 @@ const App: React.FC = () => {
   ];
   
   useEffect(() => {
-    // dispatch({ type: 'IO_CONNECTED', payload: io });
-
-    io.on('CREATE_ROOM', (e: any) => {
-      dispatch({ type: 'ROOM_UPDATE', payload: e });
-    });
-
-    io.on('CREATE_MESSAGE', (e: any) => {
-      if (e.from !== user)
-        dispatch({ type: 'MESSAGES_UPDATE', payload: e });
-    });
-
-    io.on('CHANGE_VIDEO', (e: any) => {
-      if (e !== video)
-        dispatch({ type: 'ROOM_VIDEO_UPDATE', payload: e });
-    });
-
-    io.on('UPDATE_VIDEO', (e: any) => {
-      dispatch({ type: 'ROOM_STATE_UPDATE', payload: e });
-    });
+    // TODO: Add test to catch the dispatch events
+    io.on('CREATE_ROOM', (e: any) => dispatch({ type: 'ROOM_UPDATE', payload: e }));
+    io.on('CREATE_MESSAGE', (e: any) => dispatch({ type: 'MESSAGES_UPDATE', payload: { message: e, add: user !== e.from }}));
+    io.on('CHANGE_VIDEO', (e: any) => dispatch({ type: 'ROOM_VIDEO_UPDATE', payload: { video: e, add: video !== e }}));
+    io.on('UPDATE_VIDEO', (e: any) => dispatch({ type: 'ROOM_STATE_UPDATE', payload: e }));
 
     return () => {
-      // dispatch({ type: 'IO_CLOSE', payload: null });
-      // io.disconnect();
+      // TODO: Close IO connection and emit event to clean-up on the server side
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

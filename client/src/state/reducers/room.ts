@@ -18,9 +18,10 @@ export default function reducer(state: any = initialState, action: { type: strin
       }
     }
     case 'ROOM_VIDEO_UPDATE': {
+      if(!action.payload.add) return state;
       return {
         ...state,
-        video: action.payload
+        video: action.payload.video
       }
     }
     case 'ROOM_STATE_UPDATE': {

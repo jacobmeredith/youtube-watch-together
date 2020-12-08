@@ -1,30 +1,30 @@
 import { put, takeLatest, select } from 'redux-saga/effects';
 
-import { io } from '../scoket';
+import { io } from '../socket';
 import { client } from '../axios';
 
-function* room_create(action: any) {
+export function* room_create(action: any) {
   yield io.emit('CREATE_ROOM', action.payload);
   yield put({ type: 'USER_NAME_UPDATE', payload: action.payload });
 }
 
-function* room_join(action: any) {
+export function* room_join(action: any) {
   yield io.emit('JOIN_ROOM', action.payload);
   yield put({ type: 'USER_NAME_UPDATE', payload: action.payload.user });
   yield put({ type: 'ROOM_UPDATE', payload: action.payload.room });
 }
 
-function* room_video_create(action: any) {
+export function* room_video_create(action: any) {
   yield io.emit('CHANGE_VIDEO', action.payload);
-  yield put({ type: 'ROOM_VIDEO_UPDATE', payload: action.payload });
+  yield put({ type: 'ROOM_VIDEO_UPDATE', payload: { video: action.payload, add: true }});
 }
 
-function* room_state_change(action: any) {
+export function* room_state_change(action: any) {
   yield io.emit('UPDATE_VIDEO', action.payload);
   yield put({ type: 'ROOM_STATE_UPDATE', payload: action.payload });
 }
 
-function* room_results_change(action: any) {
+export function* room_results_change(action: any) {
   try {
     const next = yield select((state) => state.room.results.next);
     const response = yield client.get(`https://www.googleapis.com/youtube/v3/search?q=${action.payload.keyword}&part=snippet&maxResults=${20}&key=${process.env.REACT_APP_YOUTUBE_API_KEY}&type=video&pageToken=${next}&order=relevance`);
