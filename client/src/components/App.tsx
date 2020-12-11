@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ThemeProvider } from 'styled-components';
+import { ChakraProvider } from '@chakra-ui/react';
 import { useDispatch, useSelector} from 'react-redux';
 import {
   BrowserRouter as Router,
@@ -36,7 +36,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={{}}>
+    <ChakraProvider>
       <Router>
         <Switch>
           <Route path='/room/:id' render={(props) => <Room {...props} />} />
@@ -44,7 +44,7 @@ const App: React.FC = () => {
           {room && <Redirect path='/' to={`/room/${room}`} />}
         </Switch>
       </Router>
-    </ThemeProvider>
+    </ChakraProvider>
   );
 }
 

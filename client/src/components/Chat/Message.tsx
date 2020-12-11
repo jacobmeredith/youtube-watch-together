@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { Box, VStack } from '@chakra-ui/react';
 
 interface IMessageInterface {
   user: string|null,
@@ -8,40 +8,30 @@ interface IMessageInterface {
 }
 
 const Message: React.FC<IMessageInterface> = ({ user, from, content }) => {
-  return user === from
-    ? <UserMessage className='message message--user'>{content}</UserMessage>
-    : <>
-        <FromAuthor>{from}</FromAuthor>
-        <FromMessage className='message message--from'>{content}</FromMessage>
-      </>;
-}
-
-const DefaultMessage = styled.div`
-  padding: .5em .75em;
-  border-radius: 1em;
-  margin-bottom: .5em;
-  max-width: 80%;
-
-  &:last-of-type {
-    margin-bottom: 0;
+  const authorProps = {
+    marginTop: '0',
+    alignSelf: 'flex-start',
+    padding: user === from ? '0 .5em 0 0' : '0 0 0 .5em',
+    fontSize: '.8em'
   }
-`;
 
-const FromAuthor = styled.small`
-  margin-left: .5em;
-  margin-bottom: .2em;
-  color: lightgrey;
-`;
+  const messageProps = {
+    padding: '.5em .75em',
+    borderRadius: '1em',
+    maxWidth: '80%',
+    alignItems: 'flex-start',
+    marginBottom: user === from ? '1em' : '0',
+    alignSelf: user === from ? 'flex-end' : 'flex-start',
+    color: user === from ? 'white' : 'black',
+    background: user === from ? '#E53E3E' : 'lightgrey',
+  }
 
-const FromMessage = styled(DefaultMessage)`
-  align-self: flex-start;
-  background-color: lightgrey;
-`;
-
-const UserMessage = styled(DefaultMessage)`
-  align-self: flex-end;
-  background-color: lightblue;
-  color: white;
-`;
+  return (
+    <>
+      {user !== from  && <Box {...authorProps}>{from}</Box>}
+      <VStack className={user === from ? 'message--user' : 'message--from'} {...messageProps}>{content.split('\n').map(item => <span key={item} style={{ marginTop: 0 }}>{item}</span>)}</VStack>
+    </>
+  )
+}
 
 export default Message;

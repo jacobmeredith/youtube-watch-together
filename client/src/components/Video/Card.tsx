@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { Fade, Box } from '@chakra-ui/react';
 
 interface ICardInterface {
   id: string,
@@ -10,40 +10,15 @@ interface ICardInterface {
 
 const Card: React.FC<ICardInterface> = ({ thumbnail, title, onClick }) => {
   return (
-    <CardDiv className='card' onClick={onClick}>
-      <CardImage style={{ backgroundImage: `url(${thumbnail})` }} />
-      <CardContent>
-        <p>{title}</p>
-      </CardContent>
-    </CardDiv>
+    <Box className='card' flexBasis='23%' marginBottom='1em' alignItems='stretch' borderRadius='.5em' overflow='hidden' _hover={{ cursor: 'pointer' }} onClick={onClick}>
+      <Fade in={true}>
+        <Box width='100%' height='8em' style={{ backgroundImage: `url(${thumbnail})`, backgroundPosition: 'center center', backgroundSize: 'cover' }} />
+        <Box padding='.5em' height='8em' backgroundColor='#f5f5f5'>
+          <p>{title.slice(0, 50).trim()}{title.length > 50 ? '...' : ''}</p>
+        </Box>
+      </Fade>
+    </Box>
   )
 }
-
-const CardDiv = styled.div`
-  width: calc(25% - .5em);
-  background-color: lightgrey;
-  margin-bottom: .5em;
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-`;
-
-const CardImage = styled.div`
-  width: 100%;
-  height: 6em;
-  background-position: center center;
-  background-size: cover;
-`;
-
-const CardContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: .5em;
-
-  p {
-    margin-bottom: 0;
-  }
-`;
 
 export default Card;

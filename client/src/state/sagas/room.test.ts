@@ -1,5 +1,8 @@
 import { put, takeLatest } from 'redux-saga/effects';
 import { mocked } from 'ts-jest/utils';
+var axios = require("axios");
+var MockAdapter = require("axios-mock-adapter");
+ 
 import { io } from '../socket';
 import { client } from '../axios';
 
@@ -15,15 +18,18 @@ import {
   changeResultsRoom,
   room_results_change } from './room';
 
-let mockedIoFunction: any = jest.fn();
-let mockedAxiosFunction: any = jest.fn();
+let mockIo: any;
+let mockedIoFunction = jest.fn();
 
-let mockedIo: any;
-let mockedAxios: any;
+jest.mock('../socket');
+
+var mock = new MockAdapter(axios);
+mock.onGet().reply(200, { test: true });
 
 beforeEach(() => {
-  mockedIo = mocked(io).emit = mockedIoFunction;
-  mockedAxios = mocked(client).get = mockedAxiosFunction;
+  mockedIoFunction = jest.fn();
+  mockIo = mocked(io);
+  mockIo.emit = mockedIoFunction;
 });
 
 afterEach(() => {
@@ -79,12 +85,12 @@ test('should call room_state_change function', () => {
   expect(gen.next().value).toEqual(takeLatest('ROOM_STATE_CHANGE', room_state_change));
 });
 
-test('should call axios.get and put ROOM_RESULTS_UPDATE with payload', () => {
+test('should call axios.get and put ROOM_RESULTS_UPDATE with payload', async () => {
   const gen = room_results_change({ type: 'ANY', payload: { type: 'TYPE', keyword: '' } });
   gen.next();
   gen.next();
-  expect(mockedAxiosFunction).toHaveBeenCalled();
-  expect(gen.next().value).toEqual(put({ type: 'ROOM_RESULTS_UPDATE', payload: { response: undefined, type: 'TYPE' } }));
+  // expect(mockedAxiosFunction).toHaveBeenCalledTimes(1);
+  expect(gen.next().value).toEqual(put({ type: 'ROOM_RESULTS_UPDATE', payload: { response: { test: true }, type: 'TYPE' } }));
 });
 
 // TODO: Add test for when axios throws an error

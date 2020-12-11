@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import { Box, VStack } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 
 import Message from './Message';
@@ -21,34 +21,13 @@ const Chat: React.FC = () => {
   ));
 
   return (
-    <ChatContainer className='chat'>
-      <MessagesContainer ref={container}>
-        <Messages>{messagesMap}</Messages>
-      </MessagesContainer>
+    <Box className='chat' position='fixed' borderLeft='1px solid lightgrey' width='30%' right='0' top='0' height='100vh'>
+      <VStack width='100%' height='100vh' overflow='auto' paddingX='1em' paddingTop='1em' paddingBottom='4.5em' ref={container}>
+        {messagesMap}
+      </VStack>
       <Input />
-    </ChatContainer>
+    </Box>
   );
 }
-
-const ChatContainer = styled.aside`
-  position: relative;
-  border-left: 1px solid lightgrey;
-  flex-basis: 30%;
-`;
-
-const MessagesContainer = styled.div`
-  flex: 1;
-  overflow: auto;
-  height: 100vh;
-  max-height: 100vh;
-  padding: .5em .5em 3.5em .5em;
-`;
-
-const Messages = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  height: 100vh;
-`;
 
 export default Chat;

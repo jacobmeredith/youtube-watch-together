@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box } from '@chakra-ui/react';
 import styled from 'styled-components';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -8,12 +9,12 @@ import SearchError from './SearchError';
 
 const Video: React.FC = () => {
   return (
-    <VideoContainer className='video'>
+    <Box height='100vh' flexBasis='70%' className='video'>
       <Player />
       <ErrorBoundary FallbackComponent={SearchError}>
         <Search />
       </ErrorBoundary>
-    </VideoContainer>
+    </Box>
   )
 }
 

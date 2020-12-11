@@ -1,14 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import { Flex } from '@chakra-ui/react';
 
 import Card from './Card';
 
 interface IListInterface {
+  style: any,
   videos: Array<any>
 }
 
-const List: React.FC<IListInterface> = ({ videos }) => {
+const List: React.FC<IListInterface> = ({ style, videos }) => {
   const dispatch = useDispatch();
 
   const videosMap = videos
@@ -18,21 +19,10 @@ const List: React.FC<IListInterface> = ({ videos }) => {
       onClick={() => dispatch({ type: 'ROOM_VIDEO_CREATE', payload: video.id })} />);
 
   return (
-    <ListContainer className='list'>
+    <Flex className='list' style={{ marginTop: 0, ...style }} flexWrap='wrap' justifyContent='space-between' padding='1em'>
       {videosMap}
-    </ListContainer>
+    </Flex>
   )
 }
-
-const ListContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 1em;
-  flex: 1;
-  overflow: auto;
-  border-top: 1px solid lightgrey;
-`;
 
 export default List;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Input, Button } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 
 interface IJoinRoomInterface {
@@ -16,8 +17,8 @@ const JoinRoom: React.FC<IJoinRoomInterface> = ({ roomId }) => {
 
   return (
     <form className='join-room' onSubmit={handleSubmit}>
-      <input type='text' placeholder='Enter your nick name' value={nick} onInput={(e: any) => setNick(e.target.value)} />
-      <button>Join room</button>
+      <Input type='text' placeholder='Enter your nick name' value={nick} onInput={(e: any) => setNick(e.target.value)} />
+      <Button type='submit' colorScheme='red'>Join room</Button>
     </form>
   )
 }

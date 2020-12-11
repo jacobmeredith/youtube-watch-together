@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Input, Button } from '@chakra-ui/react';
 import { useDispatch} from 'react-redux';
 
 const CreateRoom: React.FC = () => {
@@ -12,12 +13,12 @@ const CreateRoom: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input 
+      <Input 
         type='text'
         placeholder='Enter your nick name'
-        value={nick} 
+        value={nick}
         onInput={(e: any) => setNick(e.target.value)} />
-      <button>Create room</button>
+      <Button type='submit' colorScheme='red'>Create room</Button>
     </form>
   )
 }

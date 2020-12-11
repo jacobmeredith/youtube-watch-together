@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import { VStack, Button } from '@chakra-ui/react';
 
 import Input from './Input';
 import List from './List';
-
 
 function formatResults(videos: any): Array<any> {
   return videos.map((item: any) => {
@@ -14,6 +13,8 @@ function formatResults(videos: any): Array<any> {
 
 const Search: React.FC = () => {
   const dispatch = useDispatch();
+  const [sticky, setSticky] = useState(false);
+  const ref: any = useRef(null);
   const videos = useSelector((state: any) => state.room.results.videos);
 
   const [query, setQuery] = useState<{ keyword: string, type: string }>({
@@ -21,23 +22,33 @@ const Search: React.FC = () => {
     type: 'get',
   });
 
+  function handleScroll(event: any) {
+    if (ref.current) {
+      setSticky(ref.current.getBoundingClientRect().top <= 0);
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', () => handleScroll);
+    };
+  }, []);
+
   useEffect((): any => {
    dispatch({ type: 'ROOM_RESULTS_CHANGE', payload: { keyword: query.keyword, type: query.type } });
   }, [query]);
 
   return (
-    <SearchContainer className='search'>
-      <Input onSearch={(e: string) => setQuery({ keyword: e, type: 'get' })} />
-      <List videos={formatResults(videos)} />
-      {videos.length > 0 && <button type='button' onClick={() => setQuery({ ...query, type: 'add' })}>Load more</button>}
-    </SearchContainer>
+    <VStack style={{ marginTop: 0 }} height={sticky ? '' : '40%'} paddingBottom='1em' className='search' ref={ref}>
+      <Input
+        style={{ position: sticky ? 'fixed' : 'relative', top: '0', left: 0, width: sticky ? '70%' : '100%' }}
+        onSearch={(e: string) => setQuery({ keyword: e, type: 'get' })} />
+      <List style={{ paddingTop: sticky ? `calc(${ref.current.firstChild.offsetHeight}px + .5em)` : '.5em' }} videos={formatResults(videos)} />
+      {videos.length > 0 && <Button colorScheme='red' type='button' onClick={() => setQuery({ ...query, type: 'add' })}>Load more</Button>}
+    </VStack>
   )
 }
-
-const SearchContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 40%;
-`;
 
 export default Search;

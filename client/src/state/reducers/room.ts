@@ -5,6 +5,7 @@ export const initialState = {
     next: '',
     videos: []
   },
+  queue: [],
   time: 0,
   state: 'onPlay'
 }

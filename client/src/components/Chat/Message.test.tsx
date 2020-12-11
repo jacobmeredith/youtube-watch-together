@@ -17,12 +17,12 @@ test('should render text in the message', () => {
 
 test('should render my message with modifier', () => {
   const { getByText } = render(<Message {...props({ from: 'user 1'  })} />);
-  const myMessage = getByText('This is a message');
-  expect(myMessage.className.includes('message--user')).toBe(true);
+  const myMessage: any = getByText('This is a message');
+  expect(myMessage.parentNode.className.includes('message--user')).toBe(true);
 });
 
 test('should render others messages with modifier', () => {
   const { getByText } = render(<Message {...props()} />);
-  const myMessage = getByText('This is a message');
-  expect(myMessage.className.includes('message--from')).toBe(true);
+  const myMessage: any = getByText('This is a message');
+  expect(myMessage.parentNode.className.includes('message--from')).toBe(true);
 });
